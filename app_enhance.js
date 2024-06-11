@@ -10,22 +10,37 @@ class Dino {
     this.fact = fact;
   }
 
+  compareFeature(feature, humanFeature, comparisonType) {
+    const featureValue = this[feature];
+    let comparisonResult;
+
+    switch (comparisonType) {
+      case 'weight':
+        comparisonResult = featureValue > humanFeature ? "heavier" : "lighter";
+        break;
+      case 'height':
+        comparisonResult = featureValue > humanFeature ? "taller" : "shorter";
+        break;
+      case 'diet':
+        comparisonResult = featureValue === humanFeature ? "has the same diet as" : "has a different diet than";
+        break;
+      default:
+        comparisonResult = "has a different characteristic than";
+    }
+
+    return `${this.species} ${comparisonResult} you`;
+  }
+
   compareWeight(human) {
-    return this.weight > human.weight
-      ? `${this.species} is heavier than you`
-      : `${this.species} is lighter than you`;
+    return this.compareFeature('weight', human.weight, 'weight');
   }
 
   compareHeight(human) {
-    return this.height > human.height
-      ? `${this.species} is taller than you`
-      : `${this.species} is shorter than you`;
+    return this.compareFeature('height', human.height, 'height');
   }
 
   compareDiet(human) {
-    return this.diet === human.diet
-      ? `${this.species} has the same diet as you`
-      : `${this.species} has a different diet than you`;
+    return this.compareFeature('diet', human.diet, 'diet');
   }
 }
 

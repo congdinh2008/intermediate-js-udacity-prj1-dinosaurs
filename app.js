@@ -45,7 +45,7 @@ const human = {
 };
 
 // Use IIFE to get human data from form
-const getHumanData = (function () {
+(function () {
   document.getElementById("btn").addEventListener("click", function () {
     human.name = document.getElementById("name").value;
     human.weight = document.getElementById("weight").value;
@@ -59,31 +59,42 @@ const getHumanData = (function () {
 // Create Dino Compare Method 1
 // NOTE: Weight in JSON file is in lbs, height in inches.
 Dino.prototype.compareWeight = function (human) {
-  if (this.weight > human.weight) {
-    return `${this.species} is heavier than you`;
-  } else {
-    return `${this.species} is lighter than you`;
-  }
+  return this.compareFeature('weight', human);
 };
 
 // Create Dino Compare Method 2
 // NOTE: Weight in JSON file is in lbs, height in inches.
 Dino.prototype.compareHeight = function (human) {
-  if (this.height > human.height) {
-    return `${this.species} is taller than you`;
-  } else {
-    return `${this.species} is shorter than you`;
-  }
+  return this.compareFeature('height', human);
 };
 
 // Create Dino Compare Method 3
 // NOTE: Weight in JSON file is in lbs, height in inches.
 Dino.prototype.compareDiet = function (human) {
-  if (this.diet === human.diet) {
-    return `${this.species} has the same diet as you`;
-  } else {
-    return `${this.species} has a different diet than you`;
+  return this.compareFeature('diet', human);
+};
+
+// Generic compare function added to Dino prototype
+Dino.prototype.compareFeature = function (feature, human) {
+  const humanFeature = human[feature];
+  const dinoFeature = this[feature];
+  let result;
+
+  switch (feature) {
+    case 'weight':
+      result = dinoFeature > humanFeature ? "is heavier than" : "is lighter than";
+      break;
+    case 'height':
+      result = dinoFeature > humanFeature ? "is taller than" : "is shorter than";
+      break;
+    case 'diet':
+      result = dinoFeature === humanFeature ? "has the same diet as" : "has a different diet than";
+      break;
+    default:
+      result = "has a different characteristic than";
   }
+
+  return `${this.species} ${result} you`;
 };
 
 // Generate Tiles for each Dino in Array
@@ -107,27 +118,13 @@ function generateTiles() {
     } else {
       // Random fact
       let fact = "";
-      const random = Math.floor(Math.random() * 6);
-
-      switch (random) {
-        case 0:
-          fact = dino.compareWeight(human);
-          break;
-        case 1:
-          fact = dino.compareHeight(human);
-          break;
-        case 2:
-          fact = dino.compareDiet(human);
-          break;
-        case 3:
-          fact = dino.where;
-          break;
-        case 4:
-          fact = dino.when;
-          break;
-        default:
-          fact = dino.fact;
-      }
+      const facts = [
+        dino.compareWeight(human),
+        dino.compareHeight(human),
+        dino.compareDiet(human),
+        dino.fact,
+      ];
+      fact = facts[Math.floor(Math.random() * facts.length)];
 
       // Add fact to tile
       tile.innerHTML += `<p>${fact}</p>`;
